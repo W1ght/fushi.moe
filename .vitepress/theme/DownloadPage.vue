@@ -80,10 +80,10 @@ const CHUNK_FIRST_BYTE_MS = 10000
 const CHUNK_STALL_MS = 8000
 const STORE_KEY = 'fushi-download-mirror'
 /**
- * iOS 走 TestFlight，不再直接发 ipa。填上公开邀请链接（https://testflight.apple.com/join/…）
- * 即可；留空时 iOS 行退回该版本的 ipa 链接。
+ * iOS 走 TestFlight：主按钮是公开邀请链接，ipa 只作「GitHub 直链」留给自签用户。
+ * 与 Fushi 仓库 README 的邀请链接同一个；留空时 iOS 行退回该版本的 ipa 链接。
  */
-const IOS_TESTFLIGHT_URL = ''
+const IOS_TESTFLIGHT_URL = 'https://testflight.apple.com/join/j88d69jx'
 /** 没有文件系统写入 API 时整包先落内存再存盘；超过这个体积不冒险，退回普通链接。 */
 const MEMORY_SINK_LIMIT = 512 * 1024 * 1024
 /** 推荐包（约 9.5 GB）的分片仓库；页面拿不到清单时这个页面仍然可点。 */
@@ -678,7 +678,7 @@ onMounted(async () => {
       <td>{{ t(p.noteKey, p.noteZh) }}</td>
       <td>
         <template v-if="!jobs[p.slot]">
-          <a v-if="p.testflight && IOS_TESTFLIGHT_URL" :href="IOS_TESTFLIGHT_URL" rel="noopener" target="_blank">{{ t('dl.testflight', '加入 TestFlight') }}</a>
+          <a v-if="p.testflight && IOS_TESTFLIGHT_URL" class="dl-testflight" :href="IOS_TESTFLIGHT_URL" rel="noopener" target="_blank">{{ t('dl.testflight', '加入 TestFlight') }}</a>
           <a v-else :href="hrefFor(p.slot)" :download="downloadNameFor(p.slot)" rel="noopener" @click="onDownloadClick($event, p.slot)">
             {{ t('dl.download', '下载') }}<span v-if="sizeFor(p.slot)"> · {{ sizeFor(p.slot) }}</span>
           </a>
