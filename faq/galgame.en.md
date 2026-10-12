@@ -3,7 +3,7 @@ title: "How do I hook a galgame into Fushi?"
 description: "On Windows, drag the game's exe into the game library and press \"Launch and capture\": Fushi hooks the dialogue out of the game and shows it in a floating window — tap characters to look up, tap the plus to mine, and the card automatically carries that line's voice and a screenshot. It can also switch the locale automatically and upscale old games' windows with Magpie; you can also experimentally stream games to your phone or other devices to play and look things up."
 category: "Games"
 order: 86
-date: 2026-10-07
+date: 2026-10-12
 lang: en
 ---
 

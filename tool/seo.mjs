@@ -108,6 +108,29 @@ export function faqArticleJsonLd({ url, title, description, lang, date, faqTitle
   ];
 }
 
+/**
+ * 常见问题列表页的 FAQPage：问题 = 文章标题，答案 = 列表里显示的那句摘要 + 文章链接。
+ * Google 要求标记只描述页面上可见的内容，所以条目必须与 SSR 时列出的同一组文章一致（调用方用 poolFor 挑），
+ * 没写摘要的文章列表上没有答案文字，不进标记。
+ * 注：Google 自 2023-08 起只给政府 / 医疗类权威站点显示 FAQ 富摘要；这份标记对本站的作用是让搜索引擎与 AI 抓取直接读到问答对。
+ * @param {{ title: string, description: string, url: string, lang: string }[]} items url 为站内路径
+ * @param {string} lang 列表页的语言
+ */
+export function faqPageJsonLd(items, lang) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    url: SITE + '/faq',
+    inLanguage: lang,
+    mainEntity: items.filter((it) => it.description).map((it) => ({
+      '@type': 'Question',
+      name: it.title,
+      url: SITE + it.url,
+      acceptedAnswer: { '@type': 'Answer', text: it.description, url: SITE + it.url },
+    })),
+  };
+}
+
 const escXml = (v) => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 /**

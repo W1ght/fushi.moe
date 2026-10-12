@@ -7,7 +7,7 @@ import { LANGS, PAGES, SITE, routeFor } from '../.vitepress/theme/lang-routes.mj
 import { renderHome } from './build_lang_routes.mjs';
 import { readFaqArticles } from './build_sitemap.mjs';
 import {
-  externalizeScripts, faqArticleJsonLd, faqEntries, faqPath, homeJsonLd, langRouteEntries, ldScript, localizeFaqHref, sitemapXml,
+  externalizeScripts, faqArticleJsonLd, faqEntries, faqPageJsonLd, faqPath, homeJsonLd, langRouteEntries, ldScript, localizeFaqHref, sitemapXml,
 } from './seo.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -67,10 +67,29 @@ test('sitemap：语言路由页带全部 hreflang，常见问题按 slug 互挂�
   assert.throws(() => sitemapXml([{ loc: 'x' }, { loc: 'x' }]), /duplicate/);
 });
 
-test('真实的常见问题目录：每篇文章能读出语言，原文都在', () => {
+test('真实的常见问题目录：每篇文章能读出语言、双引号写的标题与摘要，原文都在', () => {
   const arts = readFaqArticles();
   assert.ok(arts.length > 0);
-  for (const a of arts) assert.ok(existsSync(join(ROOT, 'faq', a.slug + '.md')), a.slug + ' 缺简体原文');
+  for (const a of arts) {
+    assert.ok(existsSync(join(ROOT, 'faq', a.slug + '.md')), a.slug + ' 缺简体原文');
+    assert.ok(a.title, a.slug + '.' + a.lang + ' 的 title 要写成 title: "…"（FAQPage 标记靠它）');
+    assert.ok(a.description || a.draft, a.slug + '.' + a.lang + ' 缺 description："…"——列表页没有答案文字，FAQPage 会漏掉它');
+    assert.match(a.date, /^\d{4}-\d{2}-\d{2}$/, a.slug + '.' + a.lang + ' 缺 date（sitemap 的 lastmod 取它，改了内容要跟着改）');
+  }
+});
+
+test('FAQPage：问题 = 标题、答案 = 摘要，没摘要的不进；列表页语言与 config.mts 的常量一致', () => {
+  const ld = faqPageJsonLd([
+    { title: 'Q1?', description: 'A1', url: '/faq/a.en', lang: 'en' },
+    { title: 'Q2?', description: '', url: '/faq/b.en', lang: 'en' },
+  ], 'en');
+  assert.equal(ld['@type'], 'FAQPage');
+  assert.deepEqual(ld.mainEntity, [{
+    '@type': 'Question', name: 'Q1?', url: SITE + '/faq/a.en',
+    acceptedAnswer: { '@type': 'Answer', text: 'A1', url: SITE + '/faq/a.en' },
+  }]);
+  const pageLang = /<FaqIndex lang="([^"]+)"/.exec(read('faq.md'))[1];
+  assert.match(read('.vitepress/config.mts'), new RegExp("const FAQ_INDEX_LANG = '" + pageLang + "'"));
 });
 
 test('脚本外置：只抽足够大的裸内联脚本，顺序不变、同内容只写一份、带属性的不动', () => {

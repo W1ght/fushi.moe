@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /*
  * 构建后写 dist/sitemap.xml（public/robots.txt 里的 Sitemap 行指向它）。
  *
@@ -18,7 +17,13 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '..');
 const DIST = join(ROOT, '.vitepress', 'dist');
 
-/** faq/<slug>.md / faq/<slug>.<lang>.md → { slug, lang, date, draft }；frontmatter 只取用得到的两项。 */
+/** frontmatter 里双引号写法的字符串值（本仓库 title / description 一律这么写，tool/seo.test.mjs 守）。 */
+const quoted = (body, key) => {
+  const m = new RegExp('^' + key + ':\\s*(".*")\\s*$', 'm').exec(body);
+  return m ? String(JSON.parse(m[1])) : '';
+};
+
+/** faq/<slug>.md / faq/<slug>.<lang>.md → { slug, lang, date, draft, title, description }。 */
 export function readFaqArticles(dir = join(ROOT, 'faq')) {
   const out = [];
   for (const name of readdirSync(dir).sort()) {
@@ -30,7 +35,7 @@ export function readFaqArticles(dir = join(ROOT, 'faq')) {
     const body = fm ? fm[1] : '';
     const date = (/^date:\s*["']?(\d{4}-\d{2}-\d{2})/m.exec(body) || [])[1] || '';
     const draft = /^draft:\s*true\s*$/m.test(body);
-    out.push({ slug: m[1], lang, date, draft });
+    out.push({ slug: m[1], lang, date, draft, title: quoted(body, 'title'), description: quoted(body, 'description') });
   }
   return out;
 }
@@ -42,10 +47,13 @@ const distFileOf = (loc) => {
 };
 
 export function main() {
+  const articles = readFaqArticles();
+  // 列表页的内容就是文章清单：哪篇改了，列表（标题 / 摘要）就跟着变，取最新的那个日期
+  const faqLastmod = articles.filter((a) => !a.draft).map((a) => a.date).sort().at(-1);
   const entries = [
     ...langRouteEntries(),
-    { loc: SITE + '/faq' },
-    ...faqEntries(readFaqArticles()),
+    { loc: SITE + '/faq', lastmod: faqLastmod },
+    ...faqEntries(articles),
     { loc: SITE + '/privacy' },
   ];
   const missing = entries.filter((e) => !existsSync(distFileOf(e.loc))).map((e) => e.loc);

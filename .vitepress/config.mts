@@ -5,7 +5,12 @@ import { defineConfig } from 'vitepress'
 import type { Plugin } from 'vite'
 import { LANGS, PREFIX, SITE, vitepressLocales } from './theme/lang-routes.mjs'
 import { renderHome } from '../tool/build_lang_routes.mjs'
-import { faqArticleJsonLd } from '../tool/seo.mjs'
+import { faqArticleJsonLd, faqPageJsonLd, faqPath } from '../tool/seo.mjs'
+import { readFaqArticles } from '../tool/build_sitemap.mjs'
+import { poolFor } from './theme/faq-nav.js'
+
+/** 列表页 /faq 是英文页（faq.md 里 <FaqIndex lang="en">），SSR 列出的就是这个语言的那组文章。 */
+const FAQ_INDEX_LANG = 'en'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 /** 各语言的站点字典：locale 的默认描述与页壳（顶栏 / 底栏）文案都从这里取，SSR 时就是该语言。 */
@@ -70,6 +75,15 @@ export default defineConfig({
    */
   transformPageData(pageData) {
     const fm = pageData.frontmatter
+    if (pageData.relativePath === 'faq.md') {
+      // 与 FaqIndex 同一套挑法（poolFor），标记里的问答对就是页面上列出来的那些
+      const items = readFaqArticles()
+        .filter((a) => !a.draft)
+        .map((a) => ({ title: a.title, description: a.description, url: faqPath(a.slug, a.lang), lang: a.lang }))
+      const ld = faqPageJsonLd(poolFor(items, FAQ_INDEX_LANG), FAQ_INDEX_LANG)
+      fm.head = [...(fm.head || []), ['script', { type: 'application/ld+json' }, JSON.stringify(ld).replace(/<\//g, '<\\/')]]
+      return
+    }
     if (!/^faq\/[^/]+\.md$/.test(pageData.relativePath)) return
     if (!fm.title) throw new Error(pageData.relativePath + ': faq article needs a title (the question)')
     const url = SITE + '/' + pageData.relativePath.replace(/\.md$/, '')

@@ -3,7 +3,7 @@ title: "Mihon / Aniyomi 擴充套件是什麼？怎麼新增倉庫、安裝源�
 description: "漫畫、影片、小說共用一套線上源擴充套件：漫畫是 Mihon 擴充套件、影片是 Aniyomi 擴充套件（都是 APK），小說是 LNReader 外掛。都在「瀏覽 → 擴充套件」裡裝：Fushi 不內建任何倉庫，先自己新增倉庫地址（或匯入本地 APK），再從列表裡安裝。Windows / macOS / Android 可用。"
 category: "擴充套件（Mihon / Aniyomi）"
 order: 100
-date: 2026-10-07
+date: 2026-10-12
 lang: zh-HK
 ---
 
