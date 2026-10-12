@@ -247,7 +247,11 @@ async function runScenario(cdp, label, { cfUp, ghUp, channel }) {
       var btns = [].slice.call(document.querySelectorAll('.dl-buttons button')).map(function (b) {
         return { text: b.textContent.replace(/\s+/g, ' ').trim(), on: b.classList.contains('on'), dead: b.classList.contains('dead') };
       });
-      var links = [].slice.call(document.querySelectorAll('.dl-table a')).map(function (a) { return a.getAttribute('href'); });
+      // iOS 主按钮是 TestFlight 邀请（外链、不随源 / 通道变），不算安装包链接，单独记。
+      var links = [].slice.call(document.querySelectorAll('.dl-table a:not(.dl-testflight)')).map(function (a) { return a.getAttribute('href'); });
+      var iosRow = [].slice.call(document.querySelectorAll('.dl-table tbody tr')).find(function (tr) { var b = tr.querySelector('td b'); return b && b.textContent.trim() === 'iOS'; });
+      var iosFirst = iosRow ? iosRow.querySelector('td:last-child a') : null;
+      var iosPrimary = iosFirst ? { href: iosFirst.getAttribute('href'), testflight: iosFirst.classList.contains('dl-testflight'), target: iosFirst.getAttribute('target') } : null;
       var warn = document.querySelector('.dl-warn');
       var channels = [].slice.call(document.querySelectorAll('.dl-channels button')).map(function (b) {
         return { text: b.textContent.replace(/\s+/g, ' ').trim(), on: b.classList.contains('on') };
@@ -255,7 +259,7 @@ async function runScenario(cdp, label, { cfUp, ghUp, channel }) {
       var rows = [].slice.call(document.querySelectorAll('.dl-table tbody tr')).map(function (tr) {
         return tr.querySelector('td b') ? tr.querySelector('td b').textContent.trim() : '';
       });
-      var downloadAttrs = [].slice.call(document.querySelectorAll('.dl-table tbody tr td:last-child a')).map(function (a) { return a.getAttribute('download'); });
+      var downloadAttrs = [].slice.call(document.querySelectorAll('.dl-table tbody tr td:last-child a:not(.dl-testflight)')).map(function (a) { return a.getAttribute('download'); });
       var directLinks = [].slice.call(document.querySelectorAll('.dl-table tbody tr td:last-child a.dl-direct')).map(function (a) { return a.getAttribute('href'); });
       var packBtn = document.querySelector('.pack-dl-btn');
       var packLinkEls = [].slice.call(document.querySelectorAll('.pack-dl-links a'));
@@ -289,6 +293,7 @@ async function runScenario(cdp, label, { cfUp, ghUp, channel }) {
         pack: pack,
         firstLink: links[0] || null,
         allLinks: links,
+        iosPrimary: iosPrimary,
         warn: warn ? warn.textContent.replace(/\s+/g, ' ').trim() : null
       };
     })()`,
@@ -333,6 +338,7 @@ async function main() {
   check('A 链接是具体安装包而非 Releases 首页', a.firstLink !== null && !a.firstLink.endsWith('/releases/latest'), a.firstLink);
   check('A 显示了版本号', (a.status ?? '').includes('v9.9.9'), a.status);
   check('A 状态行显示累计下载数（/api/downloads 的 total，按语言千分位）', /^123[,.\u00a0\u202f ]?456$/.test(a.downloads ?? ''), a.downloads);
+  check('A iOS 行主按钮是 TestFlight 公开邀请（新标签页打开），ipa 只作次要直链', !!a.iosPrimary && a.iosPrimary.testflight && /^https:\/\/testflight\.apple\.com\/join\/\w+$/.test(a.iosPrimary.href) && a.iosPrimary.target === '_blank', JSON.stringify(a.iosPrimary));
   check('A 每行都有 GitHub 直链（给 IDM / aria2 自己多线程）', a.directLinks.length === a.rows.length && a.directLinks.every((h) => /github\.com\/hajisensai\/Fushi\/releases\/download\//.test(h)), JSON.stringify(a.directLinks));
 
   check('A 推荐包有网页端下载按钮', (a.pack.btn ?? '').length > 0, a.pack.btn);
@@ -361,6 +367,7 @@ async function main() {
     c.allLinks.length > 0 && c.allLinks.every((h) => h === 'https://github.com/hajisensai/Fushi/releases/latest'),
     c.firstLink,
   );
+  check('C 两个源都不通时 iOS 行仍给 TestFlight', !!c.iosPrimary && c.iosPrimary.testflight, JSON.stringify(c.iosPrimary));
   check('C 给出了说明文案', (c.warn ?? '').length > 0, c.warn);
 
   console.log('\n--- 场景 F：点「下载」不能被 VitePress 路由劫持成站内 404 ---');
@@ -546,6 +553,7 @@ async function main() {
   check('D 调试版按钮处于选中', d.channels.some((x) => x.text.includes('调试版') && x.on), JSON.stringify(d.channels));
   check('D 状态行显示调试版 tag', (d.status ?? '').includes('v9.9.10-debug.123'), d.status);
   check('D 表格换成调试版槽位（通用 Android 包，无 arm64 行）', d.rows.includes('Android') && !d.rows.some((r) => r.includes('arm64')), JSON.stringify(d.rows));
+  check('D 调试版 iOS 行同样给 TestFlight', !!d.iosPrimary && d.iosPrimary.testflight, JSON.stringify(d.iosPrimary));
   check('D 链接指向调试版通道', d.allLinks.length > 0 && d.allLinks.every((h) => h.includes('/releases/debug/') || h.includes('-debug.')), JSON.stringify(d.allLinks));
 
   console.log('\n--- 场景 E：CF 不通时切调试版走 GitHub 静态清单 ---');
