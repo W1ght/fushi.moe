@@ -1,0 +1,7 @@
+# fushi.moe：全站允许抓取。sitemap 由 tool/build_sitemap.mjs 在构建时生成。
+User-agent: *
+Allow: /
+Disallow: /releases/
+Disallow: /api/
+
+Sitemap: https://fushi.moe/sitemap.xml

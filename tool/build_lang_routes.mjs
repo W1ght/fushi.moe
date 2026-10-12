@@ -16,6 +16,10 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { LANGS, NAMES, PREFIX, RTL, htmlHead, localizeHref, seoHead } from '../.vitepress/theme/lang-routes.mjs';
+import { externalizeScripts, homeJsonLd, ldScript, localizeFaqHref } from './seo.mjs';
+
+/** 首页里比它大的裸内联脚本（demo 代码与数据）构建后外置成 /assets/home-<hash>.js。 */
+const EXTERNALIZE_MIN_BYTES = 8 * 1024;
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const DIST = join(HERE, '..', '.vitepress', 'dist');
@@ -89,14 +93,14 @@ function setAttr(tag, attr, value) {
   return tag.replace(/\s*\/?>$/, (end) => ' ' + attr + '="' + escAttr(value) + '"' + end);
 }
 
-/** 站内 <a href> 指到该语言的页面。 */
+/** 站内 <a href> 指到该语言的页面；指向常见问题文章的链接指到该语言能读的版本。 */
 function applyLinks(html, code) {
   const ranges = scriptRanges(html);
   const re = /<a\b[^>]*\shref="(\/[^"]*)"[^>]*>/g;
   const edits = [];
   for (let m; (m = re.exec(html));) {
     if (inScript(ranges, m.index)) continue;
-    const to = localizeHref(m[1], code);
+    const to = localizeFaqHref(localizeHref(m[1], code), code);
     if (to !== m[1]) edits.push([m.index, m.index + m[0].length, setAttr(m[0], 'href', to)]);
   }
   return splice(html, edits);
@@ -145,7 +149,8 @@ export function renderHome(template, dict, code) {
   const inline = {};
   for (const k of inlineKeys(template)) if (typeof dict[k] === 'string') inline[k] = dict[k];
   const dictTag = '<script id="fushi-dict" type="application/json">' + JSON.stringify(inline).replace(/<\//g, '<\\/') + '</script>';
-  head = once(head, /<script src="\/site\.js"><\/script>/, seo + '\n' + dictTag + '\n$&', 'site.js tag');
+  const ld = homeJsonLd(code, { title: stripTags(dict['meta.title']), description: stripTags(dict['meta.description']) }).map(ldScript).join('\n');
+  head = once(head, /<script src="\/site\.js"><\/script>/, seo + '\n' + ld + '\n' + dictTag + '\n$&', 'site.js tag');
 
   let html = head + template.slice(headEnd);
   // 语言菜单按钮上的当前语言名（site.js 装好后也会同步，这里烤好让不跑 JS 时也对）
@@ -161,12 +166,18 @@ export function main() {
   const template = readFileSync(join(DIST, 'index.html'), 'utf8');
   if (!/<html lang="zh-CN">/.test(template)) throw new Error('dist/index.html is not the zh-CN source template; already rendered?');
   const dicts = Object.fromEntries(LANGS.map((c) => [c, JSON.parse(readFileSync(join(I18N, c + '.json'), 'utf8'))]));
+  // 17 份共用同一批 demo 脚本（renderHome 不碰脚本内容），外置后浏览器跨语言也只下一次
+  const assets = new Map();
   for (const code of LANGS) {
     const dir = join(DIST, ...(PREFIX[code] ? [PREFIX[code].slice(1)] : []));
     mkdirSync(dir, { recursive: true });
-    writeFileSync(join(dir, 'index.html'), renderHome(template, dicts[code], code), 'utf8');
+    const { html, files } = externalizeScripts(renderHome(template, dicts[code], code), EXTERNALIZE_MIN_BYTES);
+    for (const f of files) assets.set(f.name, f.content);
+    writeFileSync(join(dir, 'index.html'), html, 'utf8');
   }
-  console.log('首页语言路由：' + LANGS.length + ' 份（默认 ' + LANGS.filter((c) => !PREFIX[c]).join(',') + '）');
+  mkdirSync(join(DIST, 'assets'), { recursive: true });
+  for (const [name, content] of assets) writeFileSync(join(DIST, 'assets', name), content, 'utf8');
+  console.log('首页语言路由：' + LANGS.length + ' 份（默认 ' + LANGS.filter((c) => !PREFIX[c]).join(',') + '），外置脚本 ' + assets.size + ' 个');
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) main();

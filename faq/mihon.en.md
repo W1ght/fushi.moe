@@ -1,6 +1,6 @@
 ---
 title: "What are Mihon / Aniyomi extensions? How do I add repositories and install sources?"
-description: "Manga, video and novels share one online-source extension system: Mihon extensions for manga and Aniyomi extensions for video (both APKs), LNReader plugins for novels. All are installed under Browse → Extensions, with built-in repositories so you can install right away; you can also add a repository URL or import a local APK. Windows / macOS / Android."
+description: "Manga, video and novels share one online-source extension system: Mihon extensions for manga and Aniyomi extensions for video (both APKs), LNReader plugins for novels. All are installed under Browse → Extensions: Fushi ships no repositories, so first add a repository URL yourself (or import a local APK), then install from the list. Windows / macOS / Android."
 category: "Extensions (Mihon / Aniyomi)"
 order: 100
 date: 2026-10-07
@@ -21,7 +21,7 @@ An **extension** is one APK containing one or more **sources** (adapters for a p
 
 Bottom bar **Browse → Extensions**, then pick novels / manga / video at the top. The "Extensions" tab of the manga library, video library and bookshelf is the same page.
 
-All three **come with built-in extension repositories**, so the list of installable extensions is there as soon as you open it — no hunting for repository URLs. To install a source the built-in repositories don't carry, tap **Stores** in the header and take one of two routes:
+None of the three **ships with a built-in extension repository** (on a fresh install the repository list is empty; repositories you used before upgrading are kept as ordinary entries you can delete). To install a source, tap **Stores** in the header and take one of two routes:
 
 - **Add extension store**: paste the URL of a Mihon / Aniyomi-compatible repository (usually a link ending in `index.min.json`). "This repository returned 0 extensions" most often means the URL points at an old-style index; use the new URL the repository provides.
 - **Import local APK**: already have a source's extension APK? Import the file directly.

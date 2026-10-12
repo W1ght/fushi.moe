@@ -200,6 +200,14 @@
     font-size: 15px; line-height: 1.7; color: var(--ink-2);
   }
   .method .tip b { display: block; color: var(--ink); font-weight: 600; margin-bottom: 6px; }
+  .guide-grid {
+    max-width: 1080px; margin: 0 auto; text-align: left;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;
+  }
+  .guide-item { background: var(--card); border-radius: 18px; padding: 24px 24px 22px; display: flex; flex-direction: column; }
+  .guide-item h3 { font-size: 18px; line-height: 1.4; font-weight: 600; color: var(--ink); margin-bottom: 10px; }
+  .guide-item p { flex: 1 1 auto; font-size: 15px; line-height: 1.75; color: var(--ink-2); }
+  .guide-item .more { display: inline-block; margin-top: 14px; font-size: 15px; }
   .acgn-row .cell:hover .letter { text-decoration: underline; }
   .acgn-row .letter { font-size: clamp(34px, 5vw, 56px); font-weight: 600; color: var(--accent); line-height: 1; }
   .acgn-row .label { margin-top: 6px; font-size: 14px; color: var(--ink-2); }
@@ -768,7 +776,7 @@
 
 <section class="feature" id="sec-a">
   <div class="head rev">
-    <p class="eyebrow" data-i18n="home.sec.video">视频</p>
+    <h2 class="eyebrow" data-i18n="home.sec.video">视频</h2>
     <p class="copy copy-2" data-i18n="home.sec.video_copy">播放时点击字幕上的词即可查词，点加号制卡。</p>
   </div>
   <div class="stage rev duo">
@@ -803,7 +811,7 @@
 
 <section class="feature alt-band" id="sec-c">
   <div class="head rev">
-    <p class="eyebrow" data-i18n="home.sec.manga">漫画</p>
+    <h2 class="eyebrow" data-i18n="home.sec.manga">漫画</h2>
     <p class="copy copy-2" data-i18n="home.sec.manga_copy">点击对话框中的文字查词，点加号制卡。</p>
   </div>
   <div class="stage rev duo">
@@ -829,7 +837,7 @@
 
 <section class="feature" id="sec-g">
   <div class="head rev">
-    <p class="eyebrow" data-i18n="home.sec.game">游戏</p>
+    <h2 class="eyebrow" data-i18n="home.sec.game">游戏</h2>
     <p class="copy copy-2" data-i18n="home.sec.game_copy">游戏台词上点词查释义，点加号制卡。</p>
   </div>
   <div class="stage rev duo">
@@ -857,7 +865,7 @@
 
 <section class="feature alt-band" id="sec-n">
   <div class="head rev">
-    <p class="eyebrow" data-i18n="home.sec.reading">阅读</p>
+    <h2 class="eyebrow" data-i18n="home.sec.reading">阅读</h2>
     <p class="copy copy-2" data-i18n="home.sec.reading_copy">点击正文中的词即可查词，点加号制卡。</p>
   </div>
   <div class="stage rev duo">
@@ -890,7 +898,7 @@
 
 <section class="black-band center">
   <div class="tight rev">
-    <p class="eyebrow" data-i18n="home.sec.anki">Anki 制卡</p>
+    <h2 class="eyebrow" data-i18n="home.sec.anki">Anki 制卡</h2>
     
     <p class="copy copy-2" style="margin-top:22px" data-i18n="home.sec.anki_copy">每张卡都带着它出生的地方：原句、动图/截图、原声音频。经 AnkiDroid / AnkiMobile / AnkiConnect 写入，内置 Lapis 模板一键建牌组。</p>
   </div>
@@ -902,7 +910,7 @@
 
 <section class="feature">
   <div class="head rev">
-    <p class="eyebrow" data-i18n="home.sec.downloads">下载 · 追更</p>
+    <h2 class="eyebrow" data-i18n="home.sec.downloads">下载 · 追更</h2>
     
     <p class="copy copy-2" data-i18n="home.sec.downloads_copy">AniList / Nyaa 应用内搜索，整季一键下载、自动入库、边下边播；订阅自动追更。内置 libtorrent。</p>
   </div>
@@ -955,9 +963,29 @@
 
 
 
+<section class="feature alt-band" id="guide">
+  <div class="head rev">
+    <h2 class="h-section" data-i18n="home.guide.title">看番、读书、玩游戏，<br>顺手学会外语</h2>
+    <p class="copy copy-2" data-i18n="home.guide.lead">Fushi 是一款免费开源的沉浸式语言学习应用：把动画、日剧、轻小说、漫画、有声书和 Galgame 变成教材，遇到生词点一下查词典，再点一下做成带原句、截图和原声的 Anki 卡片。</p>
+  </div>
+  <div class="guide-grid rev">
+    <article class="guide-item"><h3 data-i18n="home.guide.video.title">看动漫学日语：字幕上点词就能查</h3><p data-i18n="home.guide.video.body">用 Fushi 打开本地视频、Jellyfin / Emby / Plex 媒体服务器或在线视频源，播放时直接点字幕里的单词，弹出词典释义、读音和音调。ASS、SRT、VTT 外挂字幕和内封字幕都能点，还能逐句跳转、重复本句、打开字幕列表回看。</p><a class="more" href="/faq/first-card" data-i18n="home.guide.video.link">装好之后怎么边看番边制卡</a></article>
+    <article class="guide-item"><h3 data-i18n="home.guide.subs.title">双语字幕过渡，没有字幕也能自动生成</h3><p data-i18n="home.guide.subs.body">刚起步看不懂？打开副字幕，日语原文和中文翻译上下对照，熟练后再关掉。手上只有生肉没有字幕时，可以用设备端语音转录（ASR）从音轨直接生成字幕；蓝光的 PGS 图形字幕也能识别成可以点词的文字。</p><a class="more" href="/faq/secondary-subtitle" data-i18n="home.guide.subs.link">怎么用副字幕（双语）过渡</a></article>
+    <article class="guide-item"><h3 data-i18n="home.guide.anki.title">一键制作 Anki 卡片：原句、截图、原声全带上</h3><p data-i18n="home.guide.anki.body">查到的词点加号就成卡：单词、释义、原句、视频截图或动图、句子音频和单词发音自动填好。电脑端经 AnkiConnect 写入 Anki，安卓用 AnkiDroid，iPhone 用 AnkiMobile；内置 Lapis 模板一键建牌组，Anki 没开时卡片先进待发送队列，不会丢。</p><a class="more" href="/faq/anki" data-i18n="home.guide.anki.link">怎么连接 Anki</a></article>
+    <article class="guide-item"><h3 data-i18n="home.guide.books.title">读日语轻小说和 EPUB，有声书逐句同步</h3><p data-i18n="home.guide.books.body">导入 EPUB 电子书，支持竖排、注音，翻页、滚动、视觉小说三种阅读模式，正文里点词即查。配上有声书音频和字幕，朗读会逐句高亮跟随，精听、跟读、查词制卡一气呵成。</p><a class="more" href="/faq/audiobook" data-i18n="home.guide.books.link">有声书怎么用</a></article>
+    <article class="guide-item"><h3 data-i18n="home.guide.manga.title">漫画 OCR：点对话框里的字直接查词</h3><p data-i18n="home.guide.manga.body">本地漫画和在线漫画源都能读，内置 OCR 识别气泡里的竖排、横排日文，点一下就能查词典、做卡片，卡片附带那一格的画面截图。</p><a class="more" href="/faq/manga-online" data-i18n="home.guide.manga.link">怎么在线看漫画并识别文字制卡</a></article>
+    <article class="guide-item"><h3 data-i18n="home.guide.game.title">Galgame 台词实时查词（Windows）</h3><p data-i18n="home.guide.game.body">在 Windows 上把视觉小说游戏接进 Fushi：文本 Hook 抓取当前台词，在台词浮窗里点词查词、点加号制卡；引擎支持时还能把这句的角色语音一起做进卡片。直接点游戏画面查词目前仍是实验功能。</p><a class="more" href="/faq/galgame" data-i18n="home.guide.game.link">Galgame 怎么接进 Fushi</a></article>
+    <article class="guide-item"><h3 data-i18n="home.guide.dict.title">Yomitan、MDX 词典，音调和词频一目了然</h3><p data-i18n="home.guide.dict.body">直接导入 Yomitan（Yomichan）格式与 MDX / MDD 词典，查词时同时显示多本词典的释义、日语音调和词频，弹窗里还能接着点词递归查。新手引导推荐了一套开箱即用的词典和单词发音数据。</p><a class="more" href="/faq/dictionaries" data-i18n="home.guide.dict.link">怎么导入词典，学日语该装哪几类</a></article>
+    <article class="guide-item"><h3 data-i18n="home.guide.sources.title">媒体服务器、扩展源与 BT 下载</h3><p data-i18n="home.guide.sources.body">连接 Jellyfin、Emby、Plex，直接播家里 NAS 上的番剧；安装 Mihon / Aniyomi 扩展在线看漫画和视频；内置 BT 下载可以整季下载、订阅追更、自动入库。iOS 版按 App Store 规定不含在线源和下载。</p><a class="more" href="/faq/mihon" data-i18n="home.guide.sources.link">Mihon / Aniyomi 扩展是什么</a></article>
+    <article class="guide-item"><h3 data-i18n="home.guide.sync.title">手机、平板、电脑互联，进度跟着走</h3><p data-i18n="home.guide.sync.body">Fushi 互联把你的几台设备连在一起：在手机上打开电脑里的书架和媒体库，阅读与观看进度在设备之间同步，换一台设备接着看。</p><a class="more" href="/faq/interconnect" data-i18n="home.guide.sync.link">怎么把手机和电脑连起来</a></article>
+    <article class="guide-item"><h3 data-i18n="home.guide.free.title">免费开源，Windows / macOS / Android / iOS 都能用</h3><p data-i18n="home.guide.free.body">Fushi 以 GPLv3 开源，所有功能免费，没有内购和订阅，数据存在你自己的设备上。支持 Windows、macOS（Apple Silicon）、Android 和 iOS，界面提供 17 种语言。</p><a class="more" href="/faq/platforms" data-i18n="home.guide.free.link">支持哪些平台</a></article>
+  </div>
+  <p class="center" style="margin-top:34px"><a class="more" href="/faq" data-i18n="home.guide.all">所有常见问题与使用教程</a></p>
+</section>
+
 <section class="feature" id="method">
   <div class="head rev">
-    <p class="eyebrow" data-i18n="home.sec.method">怎么开始</p>
+    <h2 class="eyebrow" data-i18n="home.sec.method">怎么开始</h2>
     
   </div>
   <div class="method rev">
