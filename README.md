@@ -16,6 +16,8 @@ faq/<slug>.md           # 常见问题的文章，一个问题一个文件 → /
 public/chrome.css       # 顶栏 / 底栏 / 设计 token（含深色那一套），两种页面共用
 public/site.js          # 深浅色主题 + 界面语言（17 种，与 app 同集）+ 顶栏语言菜单 + 浮动回顶
 public/i18n/<code>.json # 站点文案字典；zh-CN 是源语言，键与标记上的 data-i18n 同一份
+tool/seo.mjs            # sitemap / JSON-LD / 首页脚本外置（构建期，见下面「搜索引擎」）
+public/robots.txt       # 指向 /sitemap.xml
 edge/                   # Worker：站点故障切换、R2 安装包、通道清单、分片来源代理、推荐包 Workers Cache
 public/icon-placeholder.png  # 占位图标（待正式 logo 替换）
 ```
@@ -57,6 +59,19 @@ draft: true                # 选填，不进列表也不进搜索（页面仍会
 转换生成，不要手改），`tool/lang-routes.test.mjs` 守着三份齐全、繁体版不过期、分组译名一致；规则全文见 `CLAUDE.md`。列表和侧栏按界面
 语言挑文章（没有该语言的就退回英文，再没有才全列），文章页壳的几句文案（`faq.*`）在字典里，访客切语言时照旧由 site.js 换；
 config.mts 给同一篇的各语言版本互挂 hreflang。样板见 `faq/free.md`。正文用二级标题分节（`##`），它们就是右侧「本页内容」。
+
+## 搜索引擎
+
+- `tool/seo.mjs`（纯函数，`tool/seo.test.mjs` 守）+ `tool/build_sitemap.mjs`：构建时写 `dist/sitemap.xml`——三个语言路由页 × 17 种语言
+  （每条带全部 hreflang + x-default）、`/faq`、`/privacy`、每篇非草稿的常见问题文章（同 slug 各语言互挂 hreflang，`lastmod` 取 `date`）。
+  地址从源文件推出，写完核对每条在 dist 里都有 HTML。`public/robots.txt` 的 `Sitemap:` 行指向它（Cloudflare 的托管 robots 规则会拼在前面）。
+- 结构化数据：首页每种语言烤 `WebSite` + `SoftwareApplication`（`renderHome`），常见问题文章出 `TechArticle` + `BreadcrumbList`
+  （`config.mts` 的 `transformPageData`）。**只写可核实的事实**——没有真实评分就不写 `aggregateRating`，测试守着。
+- 首页的 demo 代码与数据（600 多 KB 的裸内联 `<script>`）在 17 份语言首页烤好后被抽成 `/assets/home-<内容哈希>.js`，
+  HTML 里只剩正文；`<script>` 带任何属性（`type="application/json"` 的内联字典、`src`）的不动。dev server 里仍是内联的。
+- 首页「功能详解」区（`#guide`，键 `home.guide.*`）是给爬虫和第一次来的人读的正文：每段末尾链一篇常见问题，
+  链接写 `/faq/<slug>`，烤的时候按页面语言改成该语言能读的版本（简体原文 / `.zh-HK` / 其余语言 `.en`）。
+  链到的文章在每种语言下都必须存在，`tool/seo.test.mjs` 守。
 
 ## 深浅色
 

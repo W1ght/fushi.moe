@@ -5,6 +5,7 @@ import { defineConfig } from 'vitepress'
 import type { Plugin } from 'vite'
 import { LANGS, PREFIX, SITE, vitepressLocales } from './theme/lang-routes.mjs'
 import { renderHome } from '../tool/build_lang_routes.mjs'
+import { faqArticleJsonLd } from '../tool/seo.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 /** 各语言的站点字典：locale 的默认描述与页壳（顶栏 / 底栏）文案都从这里取，SSR 时就是该语言。 */
@@ -44,6 +45,9 @@ export default defineConfig({
    */
   locales: vitepressLocales(dictOf),
   cleanUrls: true,
+  // 仓库里给人和 AI 看的说明文档不是站点页面：不排除的话会被构建成 /README、/CLAUDE、/docs/failover 等公开页，
+  // 搜索引擎当成低质重复页收录。tool/seo.test.mjs 守着这张表。
+  srcExclude: ['README.md', 'AGENTS.md', 'CLAUDE.md', 'docs/**'],
   // 常见问题文章页右侧的「本页内容」（FaqOutline.vue）用 pageData.headers，要让 markdown 渲染时把二级标题抽出来。
   markdown: { headers: { level: [2] } },
   lastUpdated: false,
@@ -81,6 +85,11 @@ export default defineConfig({
       if (slug && existsSync(join(HERE, '..', 'faq', slug + '.' + l + '.md'))) alternates.push([l, SITE + '/faq/' + slug + '.' + l])
     }
     const xDefault = alternates.find(([l]) => l === 'en') || alternates[0]
+    // 结构化数据：文章 + 面包屑（Fushi › 常见问题 › 本文）；JSON 里的 </ 转义，防止提前闭合 <script>
+    const jsonLd = faqArticleJsonLd({
+      url, title: String(fm.title), description: fm.description ? String(fm.description) : '', lang, date,
+      faqTitle: dictOf(lang)['faq.title'],
+    }).map((o) => ['script', { type: 'application/ld+json' }, JSON.stringify(o).replace(/<\//g, '<\\/')])
     fm.head = [
       ...(fm.head || []),
       ['link', { rel: 'canonical', href: url }],
@@ -94,6 +103,7 @@ export default defineConfig({
       ['meta', { property: 'og:url', content: url }],
       ['meta', { name: 'twitter:card', content: 'summary' }],
       ...(date ? [['meta', { property: 'article:modified_time', content: date }]] : []),
+      ...jsonLd,
     ]
   },
   // themeConfig 是 VitePress 默认主题的配置面。本站跑的是 .vitepress/theme/
