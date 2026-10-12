@@ -3,7 +3,7 @@ title: "Mihon / Aniyomi 扩展是什么？怎么添加仓库、安装源？"
 description: "漫画、视频、小说共用一套在线源扩展：漫画是 Mihon 扩展、视频是 Aniyomi 扩展（都是 APK），小说是 LNReader 插件。都在「浏览 → 扩展」里装：Fushi 不内置任何仓库，先自己添加仓库地址（或导入本地 APK），再从列表里安装。Windows / macOS / Android 可用。"
 category: "扩展（Mihon / Aniyomi）"
 order: 100
-date: 2026-10-07
+date: 2026-10-12
 ---
 
 Fushi 内置了一套兼容 [Mihon](https://mihon.app/) 的扩展系统，漫画和视频都走它，小说另有一套：

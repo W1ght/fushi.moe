@@ -3,7 +3,7 @@ title: "Galgame 怎麼接進 Fushi？"
 description: "Windows 上把遊戲 exe 拖進遊戲庫，「啟動並捕獲」，Fushi 把臺詞 hook 出來顯示在浮窗裡：點字查詞、點加號制卡，卡上自動帶這句的原聲和截圖。還能自動轉區、用 Magpie 放大老遊戲視窗；還能實驗性地把遊戲串流到手機等其他裝置上玩、查詞。"
 category: "遊戲"
 order: 86
-date: 2026-10-07
+date: 2026-10-12
 lang: zh-HK
 ---
 

@@ -3,7 +3,7 @@ title: "Galgame 怎么接进 Fushi？"
 description: "Windows 上把游戏 exe 拖进游戏库，「启动并捕获」，Fushi 把台词 hook 出来显示在浮窗里：点字查词、点加号制卡，卡上自动带这句的原声和截图。还能自动转区、用 Magpie 放大老游戏窗口；还能实验性地把游戏串流到手机等其他设备上玩、查词。"
 category: "游戏"
 order: 86
-date: 2026-10-07
+date: 2026-10-12
 ---
 
 Galgame 是几乎完美的沉浸材料：有声音、有画面、有文本，而且文本是逐句给的。以前要 Textractor + Yomitan + ShareX / GSM 四五个工具串起来，Fushi 把这条链收进了一个模块（**仅 Windows**）。

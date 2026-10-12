@@ -3,7 +3,7 @@ title: "What are Mihon / Aniyomi extensions? How do I add repositories and insta
 description: "Manga, video and novels share one online-source extension system: Mihon extensions for manga and Aniyomi extensions for video (both APKs), LNReader plugins for novels. All are installed under Browse → Extensions: Fushi ships no repositories, so first add a repository URL yourself (or import a local APK), then install from the list. Windows / macOS / Android."
 category: "Extensions (Mihon / Aniyomi)"
 order: 100
-date: 2026-10-07
+date: 2026-10-12
 lang: en
 ---
 
