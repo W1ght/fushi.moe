@@ -17,13 +17,13 @@ title: Privacy Policy
 
 # Privacy Policy
 
-<p class="updated">Last updated: August 28, 2026</p>
+<p class="updated">Last updated: October 17, 2026</p>
 
 Fushi is a free and open-source application licensed under GPLv3. This policy describes what data the app handles and how.
 
 ## Local Storage
 
-All user data — imported books, dictionaries, fonts, audiobooks, videos, manga, reading progress, highlights, statistics, settings, and Anki card history — is stored locally on your device. Fushi does not operate any account system and does not require registration.
+All user data — imported books, dictionaries, fonts, audiobooks, videos, manga, reading progress, highlights, statistics, settings, and Anki card history — is stored locally on your device. Using Fushi does not require an account or registration. The optional Fushi account, the feedback center and the usage statistics described below are the only places where Fushi itself receives data, and each is explained in its own section.
 
 ## Cloud Sync (User-Configured)
 
@@ -39,12 +39,44 @@ Fushi does not store your cloud credentials on any external server. Authenticati
 
 Fushi creates flashcards via AnkiDroid (Android), AnkiMobile (iOS), or AnkiConnect (desktop, same network). Communication happens directly between the app and the Anki instance you configure. No data is sent to Fushi or any third party.
 
+## Usage Statistics
+
+On Android, Windows, macOS and Linux, Fushi sends one small anonymous usage report per day to the developer's server (`rank.fushi.moe`, hosted on Cloudflare) so we can see how many people use the app and which versions are still in use. Each report contains only:
+
+- A random install ID, generated on your device the first time Fushi runs. It is not derived from your hardware, account or any other identifier, and it is never included in backups, sync or profile exports, so a restored backup on a new device gets a new ID.
+- The app version
+- The platform (Android, Windows, macOS or Linux)
+- The update channel you selected (stable, beta or debug)
+
+The server counts reports per day to produce totals such as daily and monthly active installs and version distribution. Your IP address is used only for short-term rate limiting at the network edge and is not stored with these reports. Records of an install are deleted after 400 days without a report.
+
+You can turn this off at any time under **Settings → System and about → Update settings → Share usage statistics**. When it is off, no report is sent and the install ID is not attached to feedback.
+
+The iOS version does not send these reports. Apple may share aggregated App Store usage figures with the developer if you have chosen to share analytics with app developers in your iOS settings; see Apple's own privacy policy for details.
+
+## Feedback (Optional)
+
+When you submit feedback from the in-app feedback center, the following is sent to the developer's server (`rank.fushi.moe`):
+
+- The category, title and text you write, and a contact address if you enter one
+- Screenshots, a screen recording and a compressed app log, each only if you attach it
+- Device information, unless you turn off "attach device info": app version, operating system and version, device model, app and system language, and window size
+- The install ID from Usage Statistics, only when device info is attached and usage statistics are on — this lets the developer see which app versions that install has used, other feedback from the same install, and whether it has received a fix
+- Your Fushi account, only if you are signed in and choose to link it
+- Recorded by the server itself: the country and network (ASN) the request came from, and your app's user-agent
+
+Feedback is used only to investigate and fix problems and is visible only to the developers. Attachments are deleted 90 days after the feedback is closed (screen recordings 7 days after closing or 30 days after upload, whichever comes first); the text is kept so the conversation can continue. On iOS you can allow a notification when the developer replies; the push token is deleted when the feedback is closed. Your IP address is used for rate limiting and is kept in rate-limit records for no more than two days.
+
+## Fushi Account and Leaderboard (Optional, Experimental)
+
+Nothing is uploaded until you register with an email verification code. The verification code is delivered by our email provider (Resend); the server keeps only an irreversible hash of your email address, never the address itself. Once registered, the following is uploaded and shown publicly on the leaderboard: your nickname and avatar; the titles, authors, covers and finish dates of works you have finished or are reading; characters read and time spent per work; and characters read per day. Individual works can be marked as not public, and your profile can be limited to friends. Deleting your account in the app deletes all of this data from the server.
+
 ## Error Logging (Opt-In)
 
 Fushi includes an optional error log upload feature. When you choose to send an error report, the following is transmitted to a self-hosted server operated by the developer:
 
 - Error messages and stack traces
-- App version and platform information
+- App version, platform and device model
 
 Error reports do not include personal data, reading content, dictionary entries, or cloud credentials. Log data is used solely for debugging and is not shared with third parties.
 
@@ -58,9 +90,9 @@ Beyond the services you explicitly configure (cloud sync, Anki, error reporting)
 
 These requests contain no personal information beyond what is standard in an HTTP request (IP address, user-agent).
 
-## No Tracking, No Analytics
+## No Third-Party Tracking
 
-Fushi does not include any analytics SDK, advertising framework, or user tracking mechanism. There are no third-party analytics services (no Google Analytics, no Firebase Analytics, no Crashlytics).
+Fushi does not include any third-party analytics SDK, advertising framework, or cross-app tracking (no Google Analytics, no Firebase Analytics, no Crashlytics). The only usage measurement is the first-party daily report described in Usage Statistics, which you can turn off.
 
 ## Children's Privacy
 
@@ -68,7 +100,7 @@ Fushi does not knowingly collect any personal information from anyone, including
 
 ## Data Deletion
 
-Since all data is stored locally on your device, you can delete it at any time by clearing the app's data or uninstalling the app. Cloud sync data can be removed from your cloud storage account directly.
+Data stored locally on your device can be deleted at any time by clearing the app's data or uninstalling the app. Cloud sync data can be removed from your cloud storage account directly. Your Fushi account and everything uploaded with it can be deleted from within the app. Usage statistics records are deleted automatically after 400 days without a report; to have feedback deleted sooner, contact us with its feedback number.
 
 ## Open Source
 
@@ -84,6 +116,6 @@ If you have questions about this privacy policy, you can reach us at:
 
 ## Changes
 
-If this policy is updated, the changes will be posted on this page with an updated date. Fushi does not collect email addresses, so we cannot notify you directly — please check this page periodically.
+If this policy is updated, the changes will be posted on this page with an updated date. We do not keep email addresses in readable form, so we cannot notify you directly — please check this page periodically.
 
 </div>
