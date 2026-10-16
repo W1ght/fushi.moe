@@ -56,7 +56,7 @@ export async function handleStars(deps: StarsDeps): Promise<Response> {
     waitUntil: deps.waitUntil,
     validate: validateStars,
     load: async () => {
-      const r = await fetchGithubJson(deps.fetcher, 'https://api.github.com/repos/' + repo);
+      const r = await fetchGithubJson(deps.fetcher, 'https://api.github.com/repos/' + repo, deps.settings.githubToken);
       if (!r.ok) return r;
       const stars = (r.value as { stargazers_count?: unknown } | null)?.stargazers_count;
       if (typeof stars !== 'number' || !Number.isFinite(stars) || stars < 0) {

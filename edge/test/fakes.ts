@@ -16,6 +16,7 @@ export function settings(over: Partial<Settings> = {}): Settings {
     ghManifestUrl: 'https://raw.example/latest-stable-fushi.json',
     packRepo: 'owner/pack',
     packPrefix: '/pack',
+    githubToken: '',
     ...over,
   };
 }
