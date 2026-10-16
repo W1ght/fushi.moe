@@ -37,6 +37,19 @@ function deps(fetcher: typeof fetch, cache?: Cache) {
 }
 
 describe('handleStars', () => {
+  it('配了 GITHUB_TOKEN 就带 Authorization，没配就匿名', async () => {
+    const authed = capturing(() => repoJson({ stargazers_count: 1 }));
+    await handleStars({
+      settings: settings({ ghRepo: 'owner/repo', githubToken: 'ghp_test' }),
+      fetcher: authed.fn,
+    });
+    expect(authed.seen[0]!.headers.authorization).toBe('Bearer ghp_test');
+
+    const anon = capturing(() => repoJson({ stargazers_count: 1 }));
+    await handleStars(deps(anon.fn));
+    expect(anon.seen[0]!.headers).not.toHaveProperty('authorization');
+  });
+
   it('返回 stargazers_count，并向 api.github.com 打配置里的仓库', async () => {
     const { fn, seen } = capturing(() => repoJson({ stargazers_count: 1234, forks_count: 7 }));
 

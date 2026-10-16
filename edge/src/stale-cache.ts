@@ -118,11 +118,20 @@ export async function readThrough<T>(opts: ReadThroughOptions<T>): Promise<ReadT
  */
 export const GITHUB_API_TIMEOUT_MS = 8000;
 
-/** 回源 GitHub REST 取 JSON：统一 UA / accept / 超时，失败一律收敛成 { ok: false, reason }，不抛。 */
+/**
+ * 回源 GitHub REST 取 JSON：统一 UA / accept / 超时，失败一律收敛成 { ok: false, reason }，不抛。
+ * token 非空时带 Authorization，限流改按 token 计，不再和其它 Worker 共用出口 IP 的匿名额度。
+ */
 export async function fetchGithubJson(
   fetcher: typeof fetch,
   url: string,
+  token = '',
 ): Promise<LoadResult<unknown>> {
+  const headers: Record<string, string> = {
+    accept: 'application/vnd.github+json',
+    'user-agent': 'fushi-moe-edge',
+  };
+  if (token !== '') headers.authorization = 'Bearer ' + token;
   let upstream: Response;
   try {
     // 只能把 fetcher 当普通函数值传下去：成员调用会让 this 变成宿主对象，
@@ -130,7 +139,7 @@ export async function fetchGithubJson(
     upstream = await fetchWithTimeout(
       fetcher,
       url,
-      { headers: { accept: 'application/vnd.github+json', 'user-agent': 'fushi-moe-edge' } },
+      { headers },
       GITHUB_API_TIMEOUT_MS,
     );
   } catch (err) {

@@ -33,6 +33,10 @@ export interface Env {
   MIRROR?: R2Bucket;
   /** 站内下载计数（单实例 SQLite Durable Object）。未绑定时下载照常，只是不计。 */
   DOWNLOAD_STATS?: DurableObjectNamespace<DownloadStats>;
+  /** GitHub REST 的只读 token（wrangler secret，不进 wrangler.toml）。未认证请求的限流按
+   *  Worker 共享出口 IP 算，和全球其它 Worker 抢 60 次/小时；带上它改按 token 计 5000 次/小时。
+   *  只用来读公开仓库的 releases / star 数，缺省时照旧匿名请求。 */
+  GITHUB_TOKEN?: string;
 }
 
 export interface Settings {
@@ -46,6 +50,8 @@ export interface Settings {
   readonly ghManifestUrl: string;
   readonly packRepo: string;
   readonly packPrefix: string;
+  /** 空串表示匿名请求 GitHub REST。 */
+  readonly githubToken: string;
 }
 
 function num(raw: string | undefined, fallback: number, min: number, max: number): number {
@@ -79,5 +85,6 @@ export function settingsFrom(env: Env): Settings {
       'https://raw.githubusercontent.com/hajisensai/Fushi/update-manifest/latest-stable-fushi.json',
     packRepo: env.PACK_REPO || 'hajisensai/fushi-pack',
     packPrefix: normalizeBasePath(env.PACK_PREFIX || '/pack'),
+    githubToken: (env.GITHUB_TOKEN || '').trim(),
   };
 }

@@ -259,7 +259,7 @@ async function loadGithubReleases(deps: DownloadStatsDeps): Promise<LoadResult<G
   const base = 'https://api.github.com/repos/' + deps.settings.ghRepo + '/releases?per_page=' + RELEASES_PER_PAGE;
   const releases: unknown[] = [];
   for (let page = 1; page <= RELEASES_MAX_PAGES; page++) {
-    const r = await fetchGithubJson(deps.fetcher, base + '&page=' + page);
+    const r = await fetchGithubJson(deps.fetcher, base + '&page=' + page, deps.settings.githubToken);
     if (!r.ok) return r;
     if (!Array.isArray(r.value)) return { ok: false, reason: 'bad payload' };
     releases.push(...r.value);
